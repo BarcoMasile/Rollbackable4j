@@ -8,14 +8,17 @@
 		<version>2.6.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>xyz.marcobasile</groupId>
-	<artifactId>rollbackable</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>rollbackable</name>
+	<artifactId>rollbackable4j</artifactId>
+	<version>1.0.0</version>
+	<name>Rollbackable4j</name>
 	<description>Rollback utility for spring boot</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

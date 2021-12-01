@@ -39,32 +39,34 @@ public class RollbackableAspect {
             return proceed(jp, jp.getArgs());
         } catch (Throwable ex){
             checkValidExceptionsOrRetrhow(forExceptions(actionMethod), ex);
-            checkMethodParametersOrBust(method);
+            checkMethodParametersOrBust(method, ex);
             method.setAccessible(true);
             return method.invoke(obj, ex);
         }
     }
 
     private void checkValidExceptionsOrRetrhow(Class<? extends Throwable>[] forExceptions, Throwable ex) throws Throwable {
-        if (forExceptions.length == 0) {
+        if (forExceptions.length == 0 || anyExceptionValid(forExceptions, ex)) {
             return;
-        }
-
-        for (Class<? extends Throwable> exc : forExceptions) {
-            if (exc.isAssignableFrom(ex.getClass())) {
-                return;
-            }
         }
 
         throw ex;
     }
 
-    private void checkMethodParametersOrBust(Method method) {
-        for (Parameter parameter : method.getParameters()) {
-            final Class<?> type = parameter.getType();
-            if (Throwable.class.isAssignableFrom(type)) {
-                return;
+    private boolean anyExceptionValid(Class<? extends Throwable>[] forExceptions, Throwable ex) {
+        for (Class<? extends Throwable> exc : forExceptions) {
+            if (exc.isAssignableFrom(ex.getClass())) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    private void checkMethodParametersOrBust(Method method, Throwable ex) {
+        final Parameter[] parameters = method.getParameters();
+
+        if (parameters.length == 1 && parameters[0].getType().isAssignableFrom(ex.getClass())) {
+            return;
         }
 
         throw new RuntimeException("Rollback method needs a Throwable parameter");

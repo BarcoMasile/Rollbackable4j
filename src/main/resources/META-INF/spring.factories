@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=xyz.marcobasile.rollbackable.config.RollbackableAutoconfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=xyz.marcobasile.rollbackable.config.Rollbackable4jAutoconfiguration

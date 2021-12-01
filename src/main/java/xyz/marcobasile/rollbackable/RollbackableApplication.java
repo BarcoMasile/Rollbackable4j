@@ -2,17 +2,13 @@ package xyz.marcobasile.rollbackable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 import xyz.marcobasile.rollbackable.annotation.Action;
 import xyz.marcobasile.rollbackable.annotation.Rollback;
-import xyz.marcobasile.rollbackable.config.RollbackableAutoconfiguration;
 
 import javax.annotation.PostConstruct;
 
-@EnableAspectJAutoProxy
 @SpringBootApplication
 public class RollbackableApplication {
 
@@ -25,13 +21,13 @@ public class RollbackableApplication {
 @Component
 class Prova {
 
-    @Action(rollback = "prova", forExceptions = RuntimeException.class)
+    @Action(forExceptions = RuntimeException.class)
     public Object a() {
         throw new IllegalStateException("OK");
     }
 
-    @Rollback(name = "prova")
-    public void b(Throwable ex) {
+    @Rollback
+    public void b(RuntimeException ex) {
         System.out.println("Funziona: " + ex.getMessage());
     }
 }
