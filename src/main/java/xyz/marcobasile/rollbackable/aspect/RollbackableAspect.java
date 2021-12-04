@@ -1,5 +1,6 @@
 package xyz.marcobasile.rollbackable.aspect;
 
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,7 +14,10 @@ import xyz.marcobasile.rollbackable.annotation.Rollback;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Aspect
@@ -46,11 +50,9 @@ public class RollbackableAspect {
     }
 
     private void checkValidExceptionsOrRetrhow(Class<? extends Throwable>[] forExceptions, Throwable ex) throws Throwable {
-        if (forExceptions.length == 0 || anyExceptionValid(forExceptions, ex)) {
-            return;
+        if (!anyExceptionValid(forExceptions, ex)) {
+            throw ex;
         }
-
-        throw ex;
     }
 
     private boolean anyExceptionValid(Class<? extends Throwable>[] forExceptions, Throwable ex) {
@@ -95,5 +97,17 @@ public class RollbackableAspect {
 
     private Class<? extends Throwable>[] forExceptions(Method m) {
         return m.getAnnotation(Action.class).forExceptions();
+    }
+
+    private List<ArgPair> typedParametersFor(Object[] args, Method method) {
+        return IntStream.range(0, args.length)
+                .mapToObj(i -> new ArgPair(args[i], method.getParameters()[i]))
+                .collect(Collectors.toList());
+    }
+
+    @Data
+    private static class ArgPair {
+        final private Object value;
+        final private Parameter parameter;
     }
 }

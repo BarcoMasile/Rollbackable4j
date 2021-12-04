@@ -22,7 +22,7 @@ public class RollbackableApplication {
 class Prova {
 
     @Action(forExceptions = RuntimeException.class)
-    public Object a() {
+    public Object a(String o, Object o1, Integer o2) {
         throw new IllegalStateException("OK");
     }
 
@@ -38,7 +38,7 @@ class B {
 
     @PostConstruct
     void c() {
-        final Object a = p.a();
+        final Object a = p.a(null, null, null);
 
         System.out.println("Risultato e' null? " + (null == a));
     }
